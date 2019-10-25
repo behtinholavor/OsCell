@@ -1,0 +1,10 @@
+inherited AcessosView: TAcessosView
+  Caption = 'AcessosView'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    ExplicitLeft = 1
+    ExplicitWidth = 798
+    ExplicitHeight = 595
+  end
+end

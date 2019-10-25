@@ -1,0 +1,28 @@
+object frmForm: TfrmForm
+  Left = 0
+  Top = 0
+  Caption = 'frmForm'
+  ClientHeight = 448
+  ClientWidth = 674
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnKeyDown = FormKeyDown
+  PixelsPerInch = 96
+  TextHeight = 13
+  object pnlForm: TPanel
+    Left = 0
+    Top = 0
+    Width = 674
+    Height = 448
+    Align = alClient
+    BevelOuter = bvNone
+    Color = clWhite
+    ParentBackground = False
+    TabOrder = 0
+  end
+end

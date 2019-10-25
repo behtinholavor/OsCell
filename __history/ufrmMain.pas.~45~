@@ -1,0 +1,67 @@
+unit ufrmMain;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.ToolWin, Vcl.ActnMan,
+  Vcl.ActnCtrls, Vcl.ActnMenus, Vcl.WinXPanels, Vcl.ExtCtrls, Vcl.StdCtrls,
+  Vcl.DBCGrids, Vcl.Menus, System.ImageList, Vcl.ImgList;
+
+type
+  TfrmMain = class(TForm)
+    menu: TMainMenu;
+    pnlMain: TPanel;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmMain: TfrmMain;
+
+implementation
+
+{$R *.dfm}
+
+uses udtmData, ufrmForm, ufrmCadastro;
+
+procedure CreateChild(form: TfrmForm);
+var
+  i: integer;
+  booExist: Boolean;
+begin
+  booExist := False;
+  for I := 0 to frmMain.MDIChildCount - 1 do
+  begin
+    if frmMain.MDIChildren[I].ClassName = form.ClassName then
+    begin
+      frmMain.MDIChildren[I].Show;
+      booExist := True;
+      Break;
+    end;
+  end;
+
+  if (booExist) then
+    form.WindowState := wsMaximized
+  else
+  begin
+    case form.Tag of
+      0: frmForm := TfrmForm.Create(Self);
+      1: frmForm := TfrmCadastro.Create(Self);
+    end;
+
+    frmForm.Show;
+  end;
+end;
+
+
+procedure TfrmMain.Button1Click(Sender: TObject);
+begin
+  CreateChild(frmForm);
+end;
+
+end.

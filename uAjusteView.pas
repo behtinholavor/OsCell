@@ -1,0 +1,234 @@
+unit uAjusteView;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uCadastroItemView, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, System.Actions, Vcl.ActnList,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.ComCtrls,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Mask, Vcl.Buttons,
+  StrUtils;
+
+type
+  TAjusteView = class(TCadastroItemView)
+    txtidajuste: TDBText;
+    lblusuario: TLabel;
+    edtmotivo: TDBEdit;
+    Label1: TLabel;
+    lkcoperacao: TDBLookupComboBox;
+    qryOperacao: TFDQuery;
+    dtsOperacao: TDataSource;
+    Label2: TLabel;
+    txtstatus: TDBText;
+    edtnumero: TDBEdit;
+    Label3: TLabel;
+    tblCadastroidajuste: TIntegerField;
+    tblCadastrooperacao: TWideStringField;
+    tblCadastrostatus: TWideStringField;
+    tblCadastromotivo: TWideStringField;
+    tblCadastronumero: TWideStringField;
+    tblCadastrouscadast: TWideStringField;
+    tblCadastrodtcadast: TSQLTimeStampField;
+    tblCadastrousmodifi: TWideStringField;
+    tblCadastrodtmodifi: TSQLTimeStampField;
+    tblCadastroguidajuste: TWideStringField;
+    Label4: TLabel;
+    edtidmaterial: TDBEdit;
+    edtdescricao: TDBEdit;
+    edtqtd: TDBEdit;
+    Label5: TLabel;
+    tblCadastroItemidajusteitem: TIntegerField;
+    tblCadastroItemidajuste: TIntegerField;
+    tblCadastroItemidmaterial: TIntegerField;
+    tblCadastroItemdescricao: TWideStringField;
+    tblCadastroItemqtd: TFloatField;
+    tblCadastroItemcusto: TFMTBCDField;
+    tblCadastroItempreco1: TFMTBCDField;
+    tblCadastroItempreco2: TFMTBCDField;
+    tblCadastroItemobs: TWideMemoField;
+    tblCadastroItemuscadast: TWideStringField;
+    tblCadastroItemdtcadast: TSQLTimeStampField;
+    tblCadastroItemusmodifi: TWideStringField;
+    tblCadastroItemdtmodifi: TSQLTimeStampField;
+    tblCadastroItemguidajuste: TWideStringField;
+    btnmaterial: TButton;
+    txtpreco1: TDBText;
+    txtpreco2: TDBText;
+    Label6: TLabel;
+    edtcusto: TDBEdit;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    mmoobs: TDBMemo;
+    procedure FormCreate(Sender: TObject);
+    procedure actSalvarExecute(Sender: TObject); override;
+    procedure actAlterarExecute(Sender: TObject); override;
+    procedure actPesquisarExecute(Sender: TObject);
+    procedure tblCadastroItemAfterInsert(DataSet: TDataSet);
+    procedure tblCadastroAfterInsert(DataSet: TDataSet);
+    procedure edtqtdKeyPress(Sender: TObject; var Key: Char);
+    procedure edtcustoKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure AtualizarAjuste;
+    procedure InserirItem; override;
+    procedure ExcluirItem; override;
+    procedure SalvarItem; override;
+    procedure CancelarItem; override;
+    procedure PesquisarMaterial(Sender: TObject);
+    procedure ConsultarMaterial(Sender: TObject);
+    procedure CamposMaterial;
+  end;
+
+var
+  AjusteView: TAjusteView;
+
+implementation
+
+{$R *.dfm}
+
+uses uData, uMainView, uPesquisaView, uFuncao;
+
+procedure TAjusteView.FormCreate(Sender: TObject);
+begin
+  Titulo      := 'Ajustes de Estoque';
+  Tabela      := 'ajustes';
+  TabelaItem  := 'ajustesitens';
+  inherited;
+  qryOperacao.Close;
+  qryOperacao.Open();
+
+  btnmaterial.OnClick  := PesquisarMaterial;
+  edtidmaterial.OnExit := ConsultarMaterial;
+end;
+
+procedure TAjusteView.actAlterarExecute(Sender: TObject);
+begin
+  if tblCadastro.FieldByName('status').AsString = 'ABERTO' then
+    inherited
+  else
+    MainView.Mensagem.Aviso('Não é possível alterar um ajuste '+tblCadastro.FieldByName('status').AsString+'!', False);
+end;
+
+procedure TAjusteView.actPesquisarExecute(Sender: TObject);
+begin
+  inherited;
+  PesquisaView := Pesquisa('Pesquisa de ' + Tabela, Tabela);
+  PesquisaView.ShowModal;
+  if Trim(PesquisaView.Retorno) <> EmptyStr then
+    tblCadastro.Locate(tblCadastro.Fields[0].FieldName, Variant(PesquisaView.Retorno), []);
+end;
+
+procedure TAjusteView.actSalvarExecute(Sender: TObject);
+begin
+  inherited;
+  if (not (dtsCadastro.State in [dsInsert, dsEdit])) and (not (tblCadastro.IsEmpty)) and
+     (not (dtsCadastroItem.State in [dsInsert, dsEdit])) and (not (tblCadastroItem.IsEmpty)) then
+  begin
+    if MainView.Mensagem.Pergunta('Deseja atualizar o estoque dos materiais?') then
+      AtualizarAjuste;
+  end;
+end;
+
+procedure TAjusteView.AtualizarAjuste;
+begin
+  tblCadastro.DisableControls;
+  tblCadastro.Edit;
+  tblCadastro.FieldByName('status').AsString := 'FECHADO';
+  tblCadastro.Post;
+  tblCadastro.Refresh;
+  tblCadastro.EnableControls;
+end;
+
+procedure TAjusteView.tblCadastroAfterInsert(DataSet: TDataSet);
+begin
+  inherited;
+  tblCadastro.FieldByName('guidajuste').AsString := TGuid.NewGuid.ToString();
+  tblCadastro.FieldByName('operacao').AsString   := 'I';
+  tblCadastro.FieldByName('status').AsString     := 'ABERTO';
+end;
+
+procedure TAjusteView.tblCadastroItemAfterInsert(DataSet: TDataSet);
+begin
+  inherited;
+  tblCadastroItem.FieldByName('qtd').AsFloat          := 0.00;
+  tblCadastroItem.FieldByName('guidajuste').AsString  := tblCadastro.FieldByName('guidajuste').AsString;
+end;
+
+procedure TAjusteView.InserirItem;
+begin
+  inherited;
+  PesquisarMaterial(nil);
+  if edtidmaterial.CanFocus then
+    edtidmaterial.SetFocus;
+end;
+
+procedure TAjusteView.ExcluirItem;
+begin
+  inherited;
+  //
+end;
+
+procedure TAjusteView.SalvarItem;
+begin
+  inherited;
+  //
+end;
+
+procedure TAjusteView.CancelarItem;
+begin
+  inherited;
+  //
+end;
+
+procedure TAjusteView.edtqtdKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  FormatoNumeros(Sender, Key);
+end;
+
+procedure TAjusteView.edtcustoKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  FormatoNumeros(Sender, Key);
+end;
+
+procedure TAjusteView.PesquisarMaterial(Sender: TObject);
+begin
+  PesquisaView          := Pesquisa('Pesquisa de Materiais', 'materiais');
+  PesquisaView.ShowModal;
+  if Trim(PesquisaView.Retorno) <> EmptyStr then
+    CamposMaterial;
+end;
+
+procedure TAjusteView.ConsultarMaterial(Sender: TObject);
+begin
+  PesquisaView          := Pesquisa('Pesquisa de Materiais', 'materiais');
+  PesquisaView.Entrada  := TEdit(Sender).Text;
+  if Trim(PesquisaView.Retorno) <> EmptyStr then
+    CamposMaterial;
+end;
+
+
+procedure TAjusteView.CamposMaterial;
+begin
+  if not (dtsCadastroItem.State in [dsInsert]) then
+      tblCadastroItem.Insert;
+  tblCadastroItem.FieldByName('idmaterial').AsInteger := PesquisaView.Linha[0].ToInteger;
+  tblCadastroItem.FieldByName('descricao').AsString   := PesquisaView.Linha[1];
+  tblCadastroItem.FieldByName('custo').AsFloat        := StrToFloat(PesquisaView.Linha[7]);
+  tblCadastroItem.FieldByName('preco1').AsFloat       := StrToFloat(PesquisaView.Linha[8]);
+  tblCadastroItem.FieldByName('preco2').AsFloat       := StrToFloat(PesquisaView.Linha[9]);
+  if edtqtd.CanFocus then
+    edtqtd.SetFocus;
+end;
+
+initialization
+   RegisterClass(TAjusteView);
+
+end.

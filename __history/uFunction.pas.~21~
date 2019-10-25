@@ -1,0 +1,81 @@
+unit uFunction;
+
+interface
+
+uses
+  System.Classes, Controls, Classes;
+
+type
+  TMensagens = class
+  public
+    procedure Aviso(Menssagem: string; Sair: Boolean = False; Focar: TWinControl = nil);
+    function Pergunta(Mensagem: string; Padrao: Integer = MB_ICONQUESTION + MB_DEFBUTTON2): Boolean;
+    constructor Create;
+  end;
+
+  TDoubleList = class
+  private
+    FDisplay: TStringList;
+    FValue: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Add(Value, Display: string);
+    function GetValue(Display: string): string;
+    function GetDisplay(Value: string): string;
+    function GetDisplayList: TStringList;
+    function IndexOfDisplay(Display: string): Integer;
+    procedure SetClear;
+  end;
+
+implementation
+
+{ TDoubleList }
+
+procedure TDoubleList.Add(Value, Display: string);
+begin
+  FValue.Add(Value);
+  FDisplay.Add(Display);
+end;
+
+constructor TDoubleList.Create;
+begin
+  FDisplay := TStringList.Create;
+  FValue := TStringList.Create;
+end;
+
+destructor TDoubleList.Destroy;
+begin
+  FDisplay.Free;
+  FValue.Free;;
+  inherited;
+end;
+
+function TDoubleList.GetDisplay(Value: string): string;
+begin
+  Result := FDisplay.Strings[FValue.IndexOf(Value)];
+end;
+
+function TDoubleList.GetDisplayList: TStringList;
+begin
+  Result := FDisplay;
+end;
+
+function TDoubleList.GetValue(Display: string): string;
+begin
+  Result := FValue.Strings[FDisplay.IndexOf(Display)];
+end;
+
+function TDoubleList.IndexOfDisplay(Display: string): Integer;
+begin
+  Result := FDisplay.IndexOf(Display);
+end;
+
+procedure TDoubleList.SetClear;
+begin
+  FValue.Clear;
+  FDisplay.Clear;
+end;
+
+
+end.

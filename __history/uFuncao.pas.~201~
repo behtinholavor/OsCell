@@ -1,0 +1,397 @@
+unit uFuncao;
+
+interface
+
+uses
+  Classes, Controls, Windows, Forms, SysUtils, StdCtrls, FireDAC.Comp.Client, uData, DB, IdDayTime,
+  DateUtils, FireDAC.Stan.Param, uPesquisaView;
+
+type
+  TMensagens = class
+  public
+    procedure Aviso(Menssagem: string; Sair: Boolean = False; Focar: TWinControl = nil);
+    function Pergunta(Mensagem: string; Padrao: Integer = MB_ICONQUESTION + MB_DEFBUTTON2): Boolean;
+    constructor Create;
+  end;
+
+  TMetodos = class
+  private
+    FDisplay: TStringList;
+    FValue: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Add(Value, Display: string);
+    function GetValue(Display: string): string;
+    function GetDisplay(Value: string): string;
+    function GetDisplayList: TStringList;
+    function IndexOfDisplay(Display: string): Integer;
+    procedure SetClear;
+  end;
+
+  function AppVersion: string;
+  function AppDateTime: TDateTime;
+  procedure ApenasNumeros(Sender: TObject; var Key: Char);
+  function TiraMascara(ATexto: string): string;
+  procedure FormatoNumeros(Sender: TObject; var Key: Char);
+  procedure GetComboMoedas(ACombo: TComboBox);
+  function GetCaixa(User: Integer): Integer;
+  function SetCaixa(User: Integer): Integer
+//  function AsciiToInt(Caracter: Char): Integer;
+//  function Criptografa(texto:string; chave:integer): String;
+//  function DesCriptografa(texto:string; chave:integer): String;
+  function AcessoMenu(Acesso: String): Boolean;
+  function ExecuteQuery(ASql: String): Boolean;
+  function Pesquisa(Titulo: String; Pesquisa: String): TPesquisaView;
+
+
+const
+  ConstNumeros = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', #13, #127, #27, #8];
+  ConstLetras = ['A'..'Z', 'a'..'z', '0'..'9', #13, #127, #27, #8, #32];
+
+implementation
+
+{ TMensagens }
+
+uses uMainView;
+constructor TMensagens.Create;
+begin
+
+end;
+
+procedure TMensagens.Aviso(Menssagem: string; Sair: Boolean; Focar: TWinControl);
+begin
+  Application.MessageBox(PWideChar(Menssagem), PWideChar(Application.Title), MB_ICONINFORMATION + MB_OK);
+  if Focar <> nil then
+    Focar.SetFocus;
+  if Sair then
+    Abort;
+end;
+
+function TMensagens.Pergunta(Mensagem: string; Padrao: Integer): Boolean;
+begin
+  Result := Application.MessageBox(PWideChar(Mensagem), PWideChar(Application.Title), MB_YESNO + Padrao) = IDYES;
+end;
+
+{ TMetodos }
+
+procedure TMetodos.Add(Value, Display: string);
+begin
+  FValue.Add(Value);
+  FDisplay.Add(Display);
+end;
+
+constructor TMetodos.Create;
+begin
+  FDisplay := TStringList.Create;
+  FValue := TStringList.Create;
+end;
+
+destructor TMetodos.Destroy;
+begin
+  FDisplay.Free;
+  FValue.Free;;
+  inherited;
+end;
+
+function TMetodos.GetDisplay(Value: string): string;
+begin
+  Result := FDisplay.Strings[FValue.IndexOf(Value)];
+end;
+
+function TMetodos.GetDisplayList: TStringList;
+begin
+  Result := FDisplay;
+end;
+
+function TMetodos.GetValue(Display: string): string;
+begin
+  Result := FValue.Strings[FDisplay.IndexOf(Display)];
+end;
+
+function TMetodos.IndexOfDisplay(Display: string): Integer;
+begin
+  Result := FDisplay.IndexOf(Display);
+end;
+
+procedure TMetodos.SetClear;
+begin
+  FValue.Clear;
+  FDisplay.Clear;
+end;
+
+function AppVersion: string;
+//var
+//  Rec: LongRec;
+//begin
+//  Rec := LongRec(GetFileVersion(ParamStr(0)));
+//  Result := Format('%d.%d', [Rec.Hi, Rec.Lo])
+//end;
+var
+  Exe: string;
+  Size, Handle: DWORD;
+  Buffer: TBytes;
+  FixedPtr: PVSFixedFileInfo;
+begin
+  Exe := ParamStr(0);
+  Size := GetFileVersionInfoSize(PChar(Exe), Handle);
+  if Size = 0 then
+    RaiseLastOSError;
+
+  SetLength(Buffer, Size);
+
+  if not GetFileVersionInfo(PChar(Exe), Handle, Size, Buffer) then
+    RaiseLastOSError;
+
+  if not VerQueryValue(Buffer, '\', Pointer(FixedPtr), Size) then
+    RaiseLastOSError;
+
+  Result := Format('%d.%d.%d.%d',
+    [LongRec(FixedPtr.dwFileVersionMS).Hi,  //major
+     LongRec(FixedPtr.dwFileVersionMS).Lo,  //minor
+     LongRec(FixedPtr.dwFileVersionLS).Hi,  //release
+     LongRec(FixedPtr.dwFileVersionLS).Lo]) //build
+end;
+
+function AppDateTime: TDateTime;
+var
+  DataStr: String;
+  IDDayTime: TIdDayTime;
+  ExceptStr: String;
+begin
+  //time.nist.gov
+  //time-b.nist.gov
+  //nist1-dc.ustiming.org -- err
+
+  //pool.ntp.br -- timeout
+  //a.ntp.br
+  //b.ntp.br
+  //c.ntp.br
+
+   try
+     IDDayTime             := TIdDayTime.Create(nil);
+     IDDayTime.Host        := 'time.nist.gov';
+     IdDayTime.Port        := 13;
+     IDDayTime.ReadTimeout := 5000;
+     DataStr               := IDDayTime.DayTimeStr;
+   except
+    on e: Exception do
+      ExceptStr := e.Message;
+   end;
+
+  if (DataStr <> EmptyStr) and (ExceptStr = EmptyStr) then
+    DataStr := Trim(Copy(DataStr,Pos(' ', DataStr), 18))
+  else
+    DataStr := FormatDateTime('dd/mm/yyyy hh:mm:ss', Date);
+
+  Result := StrToDateTime(StringReplace(DataStr,'-','/',[rfReplaceAll]));
+  Result := IncHour(Result, -3);
+
+  FreeAndNil(IDDayTime);
+end;
+
+procedure ApenasNumeros(Sender: TObject; var Key: Char);
+begin
+  if not (CharInSet(key, ConstNumeros)) then
+    Key := #0;
+end;
+
+function TiraMascara(ATexto: string): string;
+var
+  I: Integer;
+  Str: String;
+begin
+  for I := 1 to Length(ATexto) do
+  case ATexto[I] of
+    '1': Str := Str + '1';
+    '2': Str := Str + '2';
+    '3': Str := Str + '3';
+    '4': Str := Str + '4';
+    '5': Str := Str + '5';
+    '6': Str := Str + '6';
+    '7': Str := Str + '7';
+    '8': Str := Str + '8';
+    '9': Str := Str + '9';
+    '0': Str := Str + '0';
+  end;
+  Result := Str;
+end;
+
+procedure FormatoNumeros(Sender: TObject; var Key: Char);
+var
+  KeyText: String;
+begin
+  ApenasNumeros(Sender, Key);
+//  if Key in [#8] then
+  if (CharInSet(key, [#8])) then
+    keybd_event(VK_DELETE, 0, 0, 0)
+//  else if (Key in ['1','2','3','4','5','6','7','8','9','0']) then
+  else if (CharInSet(key, ['1','2','3','4','5','6','7','8','9','0'])) then
+  begin
+    if Length(TEdit(Sender).Text) > 10 then
+      Key := #0;
+
+    KeyText := EmptyStr;
+    if TEdit(Sender).Text = '' then
+      KeyText := Key;
+    KeyText := TiraMascara(TEdit(Sender).Text) + Key;
+    KeyText := FloatToStr(StrToFloat(KeyText));
+    Key     := #0;
+    TEdit(Sender).Text := FormatFloat('0.00', StrToFloat(KeyText)/100);
+//    TRzEdit(Sender).Text := FormatFloat(',0.00', StrToFloat(KeyText)/100);
+  end;
+end;
+
+procedure GetComboMoedas(ACombo: TComboBox);
+var
+  AQuery: TFDQuery;
+begin
+  AQuery := TFDQuery.Create(nil);
+  AQuery.Connection := Data.cnnData;
+  AQuery.SQL.Clear;
+  AQuery.SQL.Add('SELECT * FROM vw_moedas');
+  AQuery.Open;
+  AQuery.FetchAll;
+  ACombo.Items.Clear;
+//  ACombo.Values.Clear;
+  if not AQuery.IsEmpty then
+  begin
+    AQuery.First;
+    while not AQuery.Eof do
+    begin
+      ACombo.Items.Add(AQuery.FieldByName('moeda').AsString);
+//      ACombo.Values.Add(AQuery.FieldByName('idmoeda').AsString);
+      AQuery.Next
+    end;
+    ACombo.ItemIndex := 0;
+  end;
+  FreeAndNil(AQuery);
+end;
+
+function GetCaixa(User: Integer): Integer;
+var
+  AQuery: TFDQuery;
+begin
+  AQuery := TFDQuery.Create(nil);
+  AQuery.Connection := Data.cnnData;
+  AQuery.SQL.Clear;
+  AQuery.SQL.Add('SELECT idcaixa FROM caixas WHERE idusuario =:idusuario and status = ''ABERTO'' ORDER BY idcaixa DESC');
+  AQuery.ParamByName('idusuario').AsInteger := User;
+  AQuery.Open;
+  Result := AQuery.FieldByName('idcaixa').AsInteger;
+  FreeAndNil(AQuery);
+end;
+
+function SetCaixa(User: Integer): Integer
+var
+  AQuery: TFDQuery;
+begin
+  AQuery := TFDQuery.Create(nil);
+  AQuery.Connection := Data.cnnData;
+  AQuery.SQL.Clear;
+  AQuery.SQL.Add('INSERT INTO caixas( ');
+  AQuery.SQL.Add('  dtcaixa,');
+  AQuery.SQL.Add('  status,');
+  AQuery.SQL.Add('  idusuario,');
+  AQuery.SQL.Add('  uscadast,');
+  AQuery.SQL.Add('  dtcadast,');
+  AQuery.SQL.Add('  guidcaixa)');
+  AQuery.SQL.Add('VALUES ( ');
+  AQuery.SQL.Add('  :dtcaixa,');
+  AQuery.SQL.Add('  :status,');
+  AQuery.SQL.Add('  :idusuario,');
+  AQuery.SQL.Add('  :uscadast,');
+  AQuery.SQL.Add('  :dtcadast,');
+  AQuery.SQL.Add('  :guidcaixa)');
+  AQuery.SQL.Add('RETURNING idcaixa ');
+  AQuery.ParamByName('dtcaixa').AsDate        := Date;
+  AQuery.ParamByName('status').AsString       := 'ABERTO';
+  AQuery.ParamByName('idusuario').AsInteger   := User;
+  AQuery.ParamByName('uscadast').AsString     := MainView.Usuario.getLogin();
+  AQuery.ParamByName('dtcadast').AsDateTime   := Now;
+  AQuery.ParamByName('guidcaixa').AsString    := TGuid.NewGuid.ToString();
+  AQuery.ExecSQL;
+  FreeAndNil(AQuery);
+end;
+
+//function AsciiToInt(Caracter: Char): Integer;
+//var
+//  i: Integer;
+//begin
+//  i := 32;
+//  while i < 255 do begin
+//    if Chr(i) = Caracter then
+//      Break;
+//    i := i + 1;
+//  end;
+//  Result := i;
+//end;
+//
+//function Criptografa(texto:string;chave:integer): String;
+//var
+//  cont: Integer;
+//  retorno: String;
+//begin
+//  if (trim(texto) = EmptyStr) or (chave = 0) then
+//    result := texto
+//  else
+//  begin
+//    retorno:='';
+//    for cont:=1 to length(texto) do
+//      retorno:=retorno+chr(asciitoint(texto[cont])+chave);
+//    result:=retorno;
+//  end;
+//end;
+//
+//function DesCriptografa(texto:string;chave:integer): String;
+//var
+//  cont:integer;
+//  retorno:string;
+//begin
+//  if (trim(texto)=EmptyStr) or (chave=0) then begin
+//    result:=texto;
+//  end else begin
+//    retorno:='';
+//    for cont:=1 to length(texto) do begin
+//      retorno:=retorno+chr(asciitoint(texto[cont])-chave);
+//    end;
+//    result:=retorno;
+//  end;
+//end;
+
+function AcessoMenu(Acesso: String): Boolean;
+var
+  AQuery: TFDQuery;
+begin
+  AQuery := TFDQuery.Create(nil);
+  AQuery.Connection := Data.cnnData;
+  AQuery.SQL.Clear;
+  AQuery.SQL.Add('SELECT * FROM vw_usuariosacessos WHERE ativo = 1 AND Tag =:Tag');
+  AQuery.ParamByName('Tag').AsString := Acesso;
+  AQuery.Open;
+  Result := (not (AQuery.IsEmpty)) or ((MainView.Usuario.getIdusuario = 0) and (MainView.Usuario.getLogin = 'ROOT'));
+  FreeAndNil(AQuery);
+end;
+
+function ExecuteQuery(ASql: String): Boolean;
+var
+  AQuery: TFDQuery;
+begin
+  AQuery := TFDQuery.Create(nil);
+  AQuery.Connection := Data.cnnData;
+  AQuery.SQL.Clear;
+  AQuery.SQL.Add(ASql);
+  AQuery.ExecSQL;
+  Result := AQuery.RowsAffected > 0;
+  FreeAndNil(AQuery);
+end;
+
+function Pesquisa(Titulo: String; Pesquisa: String): TPesquisaView;
+begin
+  PesquisaView          := TPesquisaView.Create(nil);
+  PesquisaView.Titulo   := Titulo;
+  PesquisaView.Pesquisa := Pesquisa;
+  Result := PesquisaView;
+end;
+
+end.

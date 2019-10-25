@@ -1,0 +1,348 @@
+inherited MaterialView: TMaterialView
+  Caption = 'MaterialView'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    inherited pnlCadastro: TPanel
+      ExplicitWidth = 649
+      object txtidmaterial: TDBText [0]
+        Left = 584
+        Top = 14
+        Width = 50
+        Height = 13
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Anchors = [akTop, akRight]
+        DataField = 'idmaterial'
+        DataSource = dtsCadastro
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      object lblusuario: TLabel [1]
+        Left = 10
+        Top = 35
+        Width = 634
+        Height = 16
+        AutoSize = False
+        Caption = 'Material'
+      end
+      object lbllogin: TLabel [2]
+        Left = 10
+        Top = 87
+        Width = 159
+        Height = 16
+        AutoSize = False
+        Caption = 'C'#243'digo 1'
+      end
+      object Label1: TLabel [3]
+        Left = 175
+        Top = 87
+        Width = 159
+        Height = 16
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'C'#243'digo 2'
+      end
+      object lblidacesso: TLabel [4]
+        Left = 340
+        Top = 87
+        Width = 69
+        Height = 16
+        Anchors = [akTop, akRight]
+        AutoSize = False
+        Caption = 'Unidade'
+      end
+      object Label2: TLabel [5]
+        Left = 415
+        Top = 87
+        Width = 69
+        Height = 16
+        Anchors = [akTop, akRight]
+        AutoSize = False
+        Caption = 'Tipo'
+      end
+      object lblobs: TLabel [6]
+        Left = 10
+        Top = 210
+        Width = 624
+        Height = 16
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'Descri'#231#227'o'
+      end
+      object Label3: TLabel [7]
+        Left = 10
+        Top = 142
+        Width = 159
+        Height = 16
+        AutoSize = False
+        Caption = 'Pre'#231'o Varejo'
+      end
+      object Label4: TLabel [8]
+        Left = 175
+        Top = 142
+        Width = 159
+        Height = 16
+        AutoSize = False
+        Caption = 'Pre'#231'o Atacado'
+      end
+      object Label5: TLabel [9]
+        Left = 340
+        Top = 142
+        Width = 159
+        Height = 16
+        AutoSize = False
+        Caption = 'Pre'#231'o de Custo'
+      end
+      object Label6: TLabel [10]
+        Left = 505
+        Top = 142
+        Width = 129
+        Height = 16
+        Alignment = taCenter
+        AutoSize = False
+        Caption = 'Estoque'
+      end
+      object DBText1: TDBText [11]
+        Left = 505
+        Top = 170
+        Width = 129
+        Height = 13
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Alignment = taCenter
+        DataField = 'idmaterial'
+        DataSource = dtsCadastro
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clHotLight
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      inherited pnlRodape: TPanel
+        TabOrder = 9
+        ExplicitWidth = 645
+        inherited lblCadastrado: TLabel
+          Height = 33
+        end
+        inherited lblAlterado: TLabel
+          Height = 33
+        end
+      end
+      object edtmaterial: TDBEdit
+        Left = 10
+        Top = 57
+        Width = 624
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'material'
+        DataSource = dtsCadastro
+        TabOrder = 0
+      end
+      object edtcodigo1: TDBEdit
+        Left = 10
+        Top = 109
+        Width = 159
+        Height = 24
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'codigo1'
+        DataSource = dtsCadastro
+        MaxLength = 30
+        TabOrder = 1
+      end
+      object edtcodigo2: TDBEdit
+        Left = 175
+        Top = 109
+        Width = 159
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'codigo2'
+        DataSource = dtsCadastro
+        MaxLength = 100
+        TabOrder = 2
+      end
+      object lkcidunidade: TDBLookupComboBox
+        Left = 340
+        Top = 109
+        Width = 69
+        Height = 24
+        Anchors = [akTop, akRight]
+        DataField = 'idunidade'
+        DataSource = dtsCadastro
+        KeyField = 'idunidade'
+        ListField = 'sigla'
+        ListSource = dtsUnidade
+        TabOrder = 3
+      end
+      object lkcidtipo: TDBLookupComboBox
+        Left = 415
+        Top = 109
+        Width = 219
+        Height = 24
+        Anchors = [akTop, akRight]
+        DataField = 'idtipo'
+        DataSource = dtsCadastro
+        KeyField = 'idtipo'
+        ListField = 'tipo'
+        ListSource = dtsTipo
+        TabOrder = 4
+      end
+      object mmodescricao: TDBMemo
+        Left = 10
+        Top = 232
+        Width = 624
+        Height = 313
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        DataField = 'descricao'
+        DataSource = dtsCadastro
+        TabOrder = 8
+      end
+      object edtpreco1: TDBEdit
+        Left = 10
+        Top = 164
+        Width = 159
+        Height = 24
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'preco1'
+        DataSource = dtsCadastro
+        MaxLength = 30
+        TabOrder = 5
+        OnKeyPress = edtpreco1KeyPress
+      end
+      object edtpreco2: TDBEdit
+        Left = 175
+        Top = 164
+        Width = 159
+        Height = 24
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'preco2'
+        DataSource = dtsCadastro
+        MaxLength = 30
+        TabOrder = 6
+        OnKeyPress = edtpreco2KeyPress
+      end
+      object edtcusto: TDBEdit
+        Left = 340
+        Top = 164
+        Width = 159
+        Height = 24
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'custo'
+        DataSource = dtsCadastro
+        MaxLength = 30
+        TabOrder = 7
+        OnKeyPress = edtcustoKeyPress
+      end
+    end
+    inherited pgcCadastro: TPageControl
+      inherited tabCadastro: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+        inherited pnlInserir: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlAlterar: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlExcluir: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlPesquisar: TPanel
+          ExplicitTop = 437
+          ExplicitWidth = 135
+        end
+        inherited pnlFechar: TPanel
+          ExplicitTop = 525
+          ExplicitWidth = 135
+        end
+        inherited pnlNavegar: TPanel
+          ExplicitTop = 481
+        end
+      end
+      inherited tabEdicao: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+        inherited pnlSalvar: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlCancelar: TPanel
+          ExplicitWidth = 135
+        end
+      end
+    end
+  end
+  inherited dtsCadastro: TDataSource
+    OnDataChange = dtsCadastroDataChange
+  end
+  inherited tblCadastro: TFDTable
+    IndexFieldNames = 'idmaterial'
+    UpdateOptions.UpdateTableName = 'materiais'
+    TableName = 'materiais'
+  end
+  object qryUnidade: TFDQuery
+    Connection = Data.cnnData
+    SQL.Strings = (
+      'SELECT * FROM vw_unidades')
+    Left = 450
+    Top = 273
+  end
+  object dtsUnidade: TDataSource
+    AutoEdit = False
+    DataSet = qryUnidade
+    Left = 490
+    Top = 273
+  end
+  object qryTipo: TFDQuery
+    Connection = Data.cnnData
+    SQL.Strings = (
+      'SELECT * FROM vw_tipos')
+    Left = 450
+    Top = 321
+  end
+  object dtsTipo: TDataSource
+    AutoEdit = False
+    DataSet = qryTipo
+    Left = 490
+    Top = 321
+  end
+  object qryEstoque: TFDQuery
+    Connection = Data.cnnData
+    SQL.Strings = (
+      'SELECT sp_estoque(1)')
+    Left = 450
+    Top = 376
+    object qryEstoquesp_estoque: TFloatField
+      AutoGenerateValue = arDefault
+      FieldName = 'sp_estoque'
+      Origin = 'sp_estoque'
+      ReadOnly = True
+    end
+  end
+  object dtsEstoque: TDataSource
+    AutoEdit = False
+    DataSet = qryEstoque
+    Left = 490
+    Top = 376
+  end
+end

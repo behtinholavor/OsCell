@@ -1,0 +1,221 @@
+inherited CadastroItemView: TCadastroItemView
+  Caption = 'CadastroItemView'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    inherited pnlCadastro: TPanel
+      ExplicitLeft = 3
+      DesignSize = (
+        645
+        589)
+      object pnlCadastroItem: TPanel
+        Left = 10
+        Top = 360
+        Width = 623
+        Height = 148
+        Anchors = [akLeft, akRight, akBottom]
+        BevelOuter = bvNone
+        Caption = 'pnlCadastroItem'
+        TabOrder = 1
+        object pgcCadastroItem: TPageControl
+          Left = 0
+          Top = 0
+          Width = 576
+          Height = 148
+          ActivePage = tabGrid
+          Align = alClient
+          TabOrder = 0
+          ExplicitLeft = -1
+          ExplicitHeight = 207
+          object tabGrid: TTabSheet
+            Caption = 'tabGrid'
+            ExplicitLeft = 0
+            ExplicitTop = 31
+            ExplicitWidth = 615
+            ExplicitHeight = 351
+            object grdCadastroItem: TDBGrid
+              AlignWithMargins = True
+              Left = 1
+              Top = 1
+              Width = 566
+              Height = 115
+              Margins.Left = 1
+              Margins.Top = 1
+              Margins.Right = 1
+              Margins.Bottom = 1
+              Align = alClient
+              BorderStyle = bsNone
+              DataSource = dtsCadastroItem
+              DrawingStyle = gdsGradient
+              Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines]
+              ReadOnly = True
+              TabOrder = 0
+              TitleFont.Charset = DEFAULT_CHARSET
+              TitleFont.Color = clWindowText
+              TitleFont.Height = -13
+              TitleFont.Name = 'Tahoma'
+              TitleFont.Style = []
+            end
+          end
+          object tabItem: TTabSheet
+            Caption = 'tabItem'
+            ImageIndex = 1
+            ExplicitWidth = 615
+            ExplicitHeight = 351
+          end
+        end
+        object pnlCadastroItemAcao: TPanel
+          Left = 576
+          Top = 0
+          Width = 47
+          Height = 148
+          Align = alRight
+          BevelKind = bkFlat
+          BevelOuter = bvNone
+          Caption = 'pnlCadastroItemAcao'
+          ShowCaption = False
+          TabOrder = 1
+          ExplicitLeft = 568
+          ExplicitHeight = 176
+          object imgInserirItem: TImage
+            AlignWithMargins = True
+            Left = 1
+            Top = 2
+            Width = 41
+            Height = 32
+            Margins.Left = 1
+            Margins.Top = 2
+            Margins.Right = 1
+            Margins.Bottom = 2
+            Align = alTop
+            Center = True
+            ParentShowHint = False
+            ShowHint = True
+            Transparent = True
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 109
+          end
+          object imgExcluirItem: TImage
+            AlignWithMargins = True
+            Left = 1
+            Top = 74
+            Width = 41
+            Height = 32
+            Margins.Left = 1
+            Margins.Top = 2
+            Margins.Right = 1
+            Margins.Bottom = 2
+            Align = alBottom
+            Center = True
+            ParentShowHint = False
+            ShowHint = True
+            Transparent = True
+            ExplicitLeft = 2
+            ExplicitTop = 10
+          end
+          object imgSalvarItem: TImage
+            AlignWithMargins = True
+            Left = 1
+            Top = 38
+            Width = 41
+            Height = 32
+            Margins.Left = 1
+            Margins.Top = 2
+            Margins.Right = 1
+            Margins.Bottom = 2
+            Align = alTop
+            Center = True
+            ParentShowHint = False
+            ShowHint = True
+            Transparent = True
+            ExplicitTop = 83
+            ExplicitWidth = 85
+          end
+          object imgCancelarItem: TImage
+            AlignWithMargins = True
+            Left = 1
+            Top = 110
+            Width = 41
+            Height = 32
+            Margins.Left = 1
+            Margins.Top = 2
+            Margins.Right = 1
+            Margins.Bottom = 2
+            Align = alBottom
+            Center = True
+            ParentShowHint = False
+            ShowHint = True
+            Transparent = True
+            ExplicitTop = 137
+            ExplicitWidth = 85
+          end
+        end
+      end
+    end
+    inherited pgcCadastro: TPageControl
+      inherited tabCadastro: TTabSheet
+        ExplicitLeft = 2
+        ExplicitTop = 0
+      end
+    end
+  end
+  inherited dtsCadastro: TDataSource
+    OnDataChange = dtsCadastroDataChange
+    Left = 755
+    Top = 275
+  end
+  inherited tblCadastro: TFDTable
+    Left = 709
+    Top = 275
+  end
+  inherited aclCadastro: TActionList
+    Left = 668
+    Top = 275
+    object actInserirItem: TAction
+      Category = 'CadastroItem'
+      Caption = 'Inserir [Ctrl + F2]'
+      Hint = 'Inserir item'
+      ImageIndex = 0
+      ShortCut = 16497
+      OnExecute = actInserirItemExecute
+    end
+    object actExcluirItem: TAction
+      Category = 'CadastroItem'
+      Caption = 'Excluir [Ctrl + F4]'
+      Hint = 'Excluir item'
+      ImageIndex = 2
+      ShortCut = 16499
+      OnExecute = actExcluirItemExecute
+    end
+    object actSalvarItem: TAction
+      Category = 'CadastroItem'
+      Caption = 'Salvar [Ctrl + F5]'
+      Hint = 'Salvar item'
+      ImageIndex = 3
+      ShortCut = 16500
+      OnExecute = actSalvarItemExecute
+    end
+    object actCancelarItem: TAction
+      Category = 'CadastroItem'
+      Caption = 'Cancelar [Esc]'
+      Hint = 'Cancelar item'
+      ImageIndex = 4
+      ShortCut = 27
+      OnExecute = actCancelarItemExecute
+    end
+  end
+  object tblCadastroItem: TFDTable
+    Connection = Data.cnnData
+    UpdateOptions.AssignedValues = [uvFetchGeneratorsPoint, uvGeneratorName]
+    Left = 709
+    Top = 323
+  end
+  object dtsCadastroItem: TDataSource
+    AutoEdit = False
+    DataSet = tblCadastroItem
+    OnStateChange = dtsCadastroItemStateChange
+    Left = 755
+    Top = 323
+  end
+end

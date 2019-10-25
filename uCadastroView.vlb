@@ -1,0 +1,13 @@
+﻿[tblCadastro]
+Coordinates=173,10,80,58
+
+[pnlForm]
+Coordinates=317,10,62,58
+
+[dtsCadastro]
+Coordinates=0,0,84,36
+
+[]
+Coordinates=236,251,83,36
+Visible=True
+

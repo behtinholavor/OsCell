@@ -1,0 +1,520 @@
+inherited AjusteView: TAjusteView
+  Caption = 'AjusteView'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    inherited pnlCadastro: TPanel
+      ExplicitLeft = 1
+      object txtidajuste: TDBText [0]
+        Left = 584
+        Top = 14
+        Width = 50
+        Height = 13
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Anchors = [akTop, akRight]
+        DataField = 'idajuste'
+        DataSource = dtsCadastro
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      object lblusuario: TLabel [1]
+        Left = 10
+        Top = 91
+        Width = 623
+        Height = 16
+        AutoSize = False
+        Caption = 'Motivo'
+      end
+      object Label1: TLabel [2]
+        Left = 10
+        Top = 35
+        Width = 135
+        Height = 16
+        AutoSize = False
+        Caption = 'Opera'#231#227'o'
+      end
+      object Label2: TLabel [3]
+        Left = 162
+        Top = 35
+        Width = 100
+        Height = 16
+        AutoSize = False
+        Caption = 'Status'
+      end
+      object txtstatus: TDBText [4]
+        Left = 162
+        Top = 57
+        Width = 100
+        Height = 24
+        DataField = 'status'
+        DataSource = dtsCadastro
+      end
+      object Label3: TLabel [5]
+        Left = 267
+        Top = 35
+        Width = 126
+        Height = 16
+        AutoSize = False
+        Caption = 'N'#186' controle'
+      end
+      inherited pnlRodape: TPanel
+        TabOrder = 4
+        inherited lblCadastrado: TLabel
+          Height = 33
+        end
+        inherited lblAlterado: TLabel
+          Height = 33
+        end
+      end
+      inherited pnlCadastroItem: TPanel
+        Top = 143
+        Height = 365
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        TabOrder = 3
+        ExplicitTop = 143
+        ExplicitHeight = 365
+        inherited pgcCadastroItem: TPageControl
+          Height = 365
+          ActivePage = tabItem
+          ExplicitLeft = 0
+          ExplicitHeight = 365
+          inherited tabGrid: TTabSheet
+            ExplicitLeft = 4
+            ExplicitTop = 27
+            ExplicitWidth = 568
+            ExplicitHeight = 334
+            inherited grdCadastroItem: TDBGrid
+              Height = 332
+              Options = [dgTitles, dgIndicator, dgColLines, dgRowLines]
+              Columns = <
+                item
+                  Expanded = False
+                  FieldName = 'idajusteitem'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'idajuste'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'idmaterial'
+                  Width = 100
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'descricao'
+                  Width = 550
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'qtd'
+                  Width = 100
+                  Visible = True
+                end
+                item
+                  Expanded = False
+                  FieldName = 'custo'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'preco1'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'preco2'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'obs'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'uscadast'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'dtcadast'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'usmodifi'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'dtmodifi'
+                  Visible = False
+                end
+                item
+                  Expanded = False
+                  FieldName = 'guidajuste'
+                  Visible = False
+                end>
+            end
+          end
+          inherited tabItem: TTabSheet
+            ExplicitLeft = 4
+            ExplicitTop = 27
+            ExplicitWidth = 568
+            ExplicitHeight = 334
+            object Label4: TLabel
+              Left = 5
+              Top = 5
+              Width = 89
+              Height = 16
+              AutoSize = False
+              Caption = 'Material'
+            end
+            object Label5: TLabel
+              Left = 5
+              Top = 68
+              Width = 88
+              Height = 16
+              AutoSize = False
+              Caption = 'Qtd'
+            end
+            object txtpreco1: TDBText
+              Left = 383
+              Top = 93
+              Width = 88
+              Height = 17
+              Anchors = [akTop, akRight]
+              DataField = 'preco1'
+              DataSource = dtsCadastroItem
+            end
+            object txtpreco2: TDBText
+              Left = 477
+              Top = 93
+              Width = 88
+              Height = 17
+              Anchors = [akTop, akRight]
+              DataField = 'preco2'
+              DataSource = dtsCadastroItem
+            end
+            object Label6: TLabel
+              Left = 99
+              Top = 68
+              Width = 88
+              Height = 16
+              AutoSize = False
+              Caption = 'Custo'
+            end
+            object Label7: TLabel
+              Left = 383
+              Top = 68
+              Width = 88
+              Height = 16
+              Anchors = [akTop, akRight]
+              AutoSize = False
+              Caption = 'Pre'#231'o Varejo'
+            end
+            object Label8: TLabel
+              Left = 477
+              Top = 68
+              Width = 88
+              Height = 16
+              Anchors = [akTop, akRight]
+              AutoSize = False
+              Caption = 'Pre'#231'o Atacado'
+            end
+            object edtidmaterial: TDBEdit
+              Left = 3
+              Top = 27
+              Width = 89
+              Height = 24
+              AutoSize = False
+              CharCase = ecUpperCase
+              DataField = 'idmaterial'
+              DataSource = dtsCadastroItem
+              TabOrder = 0
+            end
+            object edtdescricao: TDBEdit
+              Left = 98
+              Top = 27
+              Width = 467
+              Height = 24
+              Anchors = [akLeft, akTop, akRight]
+              AutoSize = False
+              CharCase = ecUpperCase
+              DataField = 'descricao'
+              DataSource = dtsCadastroItem
+              TabOrder = 1
+            end
+            object edtqtd: TDBEdit
+              Left = 3
+              Top = 90
+              Width = 88
+              Height = 24
+              AutoSize = False
+              CharCase = ecUpperCase
+              DataField = 'qtd'
+              DataSource = dtsCadastroItem
+              TabOrder = 2
+              OnKeyPress = edtqtdKeyPress
+            end
+            object btnmaterial: TButton
+              Left = 64
+              Top = 28
+              Width = 27
+              Height = 22
+              ImageIndex = 5
+              Images = MainView.imlForm
+              TabOrder = 3
+            end
+            object edtcusto: TDBEdit
+              Left = 97
+              Top = 90
+              Width = 88
+              Height = 24
+              AutoSize = False
+              CharCase = ecUpperCase
+              DataField = 'custo'
+              DataSource = dtsCadastroItem
+              TabOrder = 4
+              OnKeyPress = edtcustoKeyPress
+            end
+          end
+        end
+        inherited pnlCadastroItemAcao: TPanel
+          Height = 365
+          BevelKind = bkNone
+          ExplicitLeft = 576
+          ExplicitHeight = 365
+          inherited imgInserirItem: TImage
+            Width = 45
+            ExplicitWidth = 45
+          end
+          inherited imgExcluirItem: TImage
+            Top = 295
+            Width = 45
+            ExplicitTop = 295
+            ExplicitWidth = 45
+          end
+          inherited imgSalvarItem: TImage
+            Width = 45
+            ExplicitTop = 137
+            ExplicitWidth = 45
+          end
+          inherited imgCancelarItem: TImage
+            Top = 331
+            Width = 45
+            ExplicitTop = 173
+            ExplicitWidth = 45
+          end
+        end
+      end
+      object edtmotivo: TDBEdit
+        Left = 10
+        Top = 113
+        Width = 623
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'motivo'
+        DataSource = dtsCadastro
+        TabOrder = 2
+      end
+      object lkcoperacao: TDBLookupComboBox
+        Left = 10
+        Top = 57
+        Width = 135
+        Height = 24
+        DataField = 'operacao'
+        DataSource = dtsCadastro
+        KeyField = 'op'
+        ListField = 'operacao'
+        ListSource = dtsOperacao
+        TabOrder = 0
+      end
+      object edtnumero: TDBEdit
+        Left = 267
+        Top = 57
+        Width = 366
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'numero'
+        DataSource = dtsCadastro
+        TabOrder = 1
+      end
+    end
+    inherited pgcCadastro: TPageControl
+      inherited tabCadastro: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+      end
+      inherited tabEdicao: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+      end
+    end
+  end
+  inherited tblCadastro: TFDTable
+    AfterInsert = tblCadastroAfterInsert
+    IndexFieldNames = 'idajuste'
+    UpdateOptions.UpdateTableName = 'ajustes'
+    TableName = 'ajustes'
+    object tblCadastroidajuste: TIntegerField
+      FieldName = 'idajuste'
+      Origin = 'idajuste'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object tblCadastrooperacao: TWideStringField
+      FieldName = 'operacao'
+      Origin = 'operacao'
+      FixedChar = True
+      Size = 1
+    end
+    object tblCadastrostatus: TWideStringField
+      FieldName = 'status'
+      Origin = 'status'
+    end
+    object tblCadastromotivo: TWideStringField
+      FieldName = 'motivo'
+      Origin = 'motivo'
+      Size = 500
+    end
+    object tblCadastronumero: TWideStringField
+      FieldName = 'numero'
+      Origin = 'numero'
+      Size = 10
+    end
+    object tblCadastrouscadast: TWideStringField
+      FieldName = 'uscadast'
+      Origin = 'uscadast'
+      Size = 45
+    end
+    object tblCadastrodtcadast: TSQLTimeStampField
+      FieldName = 'dtcadast'
+      Origin = 'dtcadast'
+    end
+    object tblCadastrousmodifi: TWideStringField
+      FieldName = 'usmodifi'
+      Origin = 'usmodifi'
+      Size = 45
+    end
+    object tblCadastrodtmodifi: TSQLTimeStampField
+      FieldName = 'dtmodifi'
+      Origin = 'dtmodifi'
+    end
+    object tblCadastroguidajuste: TWideStringField
+      FieldName = 'guidajuste'
+      Origin = 'guidajuste'
+      Size = 50
+    end
+  end
+  inherited tblCadastroItem: TFDTable
+    AfterInsert = tblCadastroItemAfterInsert
+    IndexFieldNames = 'idajusteitem'
+    UpdateOptions.UpdateTableName = 'ajustesitens'
+    TableName = 'ajustesitens'
+    object tblCadastroItemidajusteitem: TIntegerField
+      FieldName = 'idajusteitem'
+      Origin = 'idajusteitem'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object tblCadastroItemidajuste: TIntegerField
+      FieldName = 'idajuste'
+      Origin = 'idajuste'
+    end
+    object tblCadastroItemidmaterial: TIntegerField
+      Alignment = taLeftJustify
+      DisplayLabel = 'C'#243'd. material'
+      FieldName = 'idmaterial'
+      Origin = 'idmaterial'
+    end
+    object tblCadastroItemdescricao: TWideStringField
+      DisplayLabel = 'Descri'#231#227'o do material'
+      FieldName = 'descricao'
+      Origin = 'descricao'
+      Size = 200
+    end
+    object tblCadastroItemqtd: TFloatField
+      DisplayLabel = 'Quantidade'
+      FieldName = 'qtd'
+      Origin = 'qtd'
+    end
+    object tblCadastroItemcusto: TFMTBCDField
+      FieldName = 'custo'
+      Origin = 'custo'
+      Precision = 18
+      Size = 3
+    end
+    object tblCadastroItempreco1: TFMTBCDField
+      FieldName = 'preco1'
+      Origin = 'preco1'
+      Precision = 18
+      Size = 3
+    end
+    object tblCadastroItempreco2: TFMTBCDField
+      FieldName = 'preco2'
+      Origin = 'preco2'
+      Precision = 18
+      Size = 3
+    end
+    object tblCadastroItemobs: TWideMemoField
+      FieldName = 'obs'
+      Origin = 'obs'
+      BlobType = ftWideMemo
+    end
+    object tblCadastroItemuscadast: TWideStringField
+      FieldName = 'uscadast'
+      Origin = 'uscadast'
+      Size = 45
+    end
+    object tblCadastroItemdtcadast: TSQLTimeStampField
+      FieldName = 'dtcadast'
+      Origin = 'dtcadast'
+    end
+    object tblCadastroItemusmodifi: TWideStringField
+      FieldName = 'usmodifi'
+      Origin = 'usmodifi'
+      Size = 45
+    end
+    object tblCadastroItemdtmodifi: TSQLTimeStampField
+      FieldName = 'dtmodifi'
+      Origin = 'dtmodifi'
+    end
+    object tblCadastroItemguidajuste: TWideStringField
+      FieldName = 'guidajuste'
+      Origin = 'guidajuste'
+      Size = 50
+    end
+  end
+  object qryOperacao: TFDQuery
+    Connection = Data.cnnData
+    SQL.Strings = (
+      'SELECT * FROM vw_operacoes ORDER BY idoperacao ASC')
+    Left = 488
+    Top = 344
+  end
+  object dtsOperacao: TDataSource
+    AutoEdit = False
+    DataSet = qryOperacao
+    Left = 528
+    Top = 344
+  end
+end

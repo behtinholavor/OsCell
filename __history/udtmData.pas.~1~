@@ -1,0 +1,83 @@
+unit udtmData;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Forms, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  FireDAC.Phys.PGDef, FireDAC.Phys.PG, Data.DB, FireDAC.Comp.Client, Dialogs;
+
+type
+  TdtmData = class(TDataModule)
+    cnnData: TFDConnection;
+    lnkData: TFDPhysPgDriverLink;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dtmData: TdtmData;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+uses ufrmMain;
+
+{$R *.dfm}
+
+procedure CarregarDriver;
+begin
+  try
+    dtmData.lnkData.VendorHome := ExtractFilePath(Application.ExeName) + 'pg32\';
+    dtmData.lnkData.VendorLib  := 'libpq.dll';
+    dtmData.lnkData.Release;
+  except
+    on e: Exception do
+      ShowMessage('Erro ao carregar driver de conexão! '+#13+ e.Message +#13+ e.StackTrace);
+  end;
+end;
+
+procedure CarregarDataBase;
+begin
+  try
+    dtmData.cnnData.Connected                   := False;
+    dtmData.cnnData.Params.Values['Database']   := 'db_oscell';
+    dtmData.cnnData.Params.Values['User_name']  := 'sysoss';
+    dtmData.cnnData.Params.Values['Password']   := 'oss123';
+    dtmData.cnnData.Params.Values['Port']       := '5432';
+    dtmData.cnnData.Params.Values['Server']     := 'localhost';
+    dtmData.cnnData.Connected                   := True;
+  except
+    on e: Exception do
+      ShowMessage('Erro ao conectar a base de dados! '+#13+ e.Message +#13+ e.StackTrace);
+  end;
+end;
+
+procedure CriarMenu;
+begin
+  try
+    frmMain := TfrmMain.Create(self);
+    frmMain.ClientHeight  := 410;
+    frmMain.ClientWidth   := 515;
+    frmMain.Visible       := True;
+    frmMain.Show;
+  except
+    on e: Exception do
+      ShowMessage('Erro ao criar menu do sistema! '+#13+ e.Message +#13+ e.StackTrace);
+  end;
+end;
+
+
+procedure TdtmData.DataModuleCreate(Sender: TObject);
+begin
+  CarregarDriver;
+  CarregarDataBase;
+  CriarMenu;
+end;
+
+end.

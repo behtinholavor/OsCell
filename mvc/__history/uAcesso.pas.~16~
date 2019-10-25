@@ -1,0 +1,43 @@
+unit uAcesso;
+
+interface
+
+type
+  TAcesso = class
+  private
+    FIdacesso: Integer;
+    FAcesso: String;
+    procedure setIdacesso(Value: Integer);
+    procedure setAcesso(Value: String);
+    function getIdacesso: Integer;
+    function getAcesso: String;
+  public
+    property idacesso: Integer read getIdacesso write setIdacesso;
+    property acesso: String read getAcesso write setAcesso;
+  end;
+
+implementation
+
+{ TAcesso }
+
+function TAcesso.getIdacesso: Integer;
+begin
+  Result := FIdacesso;
+end;
+
+function TAcesso.getAcesso: String;
+begin
+  Result := FAcesso;
+end;
+
+procedure TAcesso.setIdacesso(Value: Integer);
+begin
+  FIdacesso := Value;
+end;
+
+procedure TAcesso.setAcesso(Value: String);
+begin
+  FAcesso := Value;
+end;
+
+end.

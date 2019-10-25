@@ -1,0 +1,99 @@
+unit uLogarView;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormView, Vcl.ExtCtrls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.BaseImageCollection, Vcl.ImageCollection,
+  System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, System.Actions,
+  Vcl.ActnList, Vcl.StdCtrls;
+
+type
+  TLogarView = class(TFormView)
+    aclLogin: TActionList;
+    actConfirmar: TAction;
+    actCancelar: TAction;
+    imlLogin: TVirtualImageList;
+    imcLogin: TImageCollection;
+    qryLogin: TFDQuery;
+    pnlAcesso: TPanel;
+    imgSenha: TImage;
+    imgLogin: TImage;
+    edtLogin: TEdit;
+    edtSenha: TEdit;
+    btnAcessar: TButton;
+    Button1: TButton;
+    Label1: TLabel;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormActivate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure actConfirmarExecute(Sender: TObject);
+    procedure actCancelarExecute(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  LogarView: TLogarView;
+
+implementation
+
+{$R *.dfm}
+
+uses uMainView;
+procedure TLogarView.FormActivate(Sender: TObject);
+begin
+  inherited;
+  pnlAcesso.Top  := Trunc((self.Height / 2) - (pnlAcesso.Height / 2));
+  pnlAcesso.Left := Trunc( (self.Width / 2) - (pnlAcesso.Width / 2));
+end;
+
+procedure TLogarView.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  //inherited;
+end;
+
+procedure TLogarView.FormCreate(Sender: TObject);
+begin
+  inherited;
+  imlLogin.GetIcon(0, Self.Icon);
+  imlLogin.GetBitmap(2, imgLogin.Picture.Bitmap);
+  imlLogin.GetBitmap(5, imgSenha.Picture.Bitmap);
+end;
+
+procedure TLogarView.actConfirmarExecute(Sender: TObject);
+begin
+  inherited;
+  if (Trim(edtLogin.Text) <> EmptyStr) and (Trim(edtLogin.Text) <> EmptyStr) then
+  begin
+    qryLogin.Close;
+    qryLogin.SQL.Clear;
+    qryLogin.SQL.Add('select * from vw_usuarios where login = '+AnsiUpperCase(QuotedStr(edtLogin.Text))+' and senha = '+QuotedStr(edtSenha.Text));
+    qryLogin.Open();
+    if not qryLogin.IsEmpty then
+      MainView.Mensagem.Aviso('')
+    else
+      MainView.Mensagem.Aviso('Usuário e/ou Senha inválidos!', True, edtSenha);
+  end
+  else
+    MainView.Mensagem.Aviso('Usuário e/ou Senha não informados!', True, edtLogin);
+end;
+
+procedure TLogarView.actCancelarExecute(Sender: TObject);
+begin
+  inherited;
+  MainView.Close;
+  Close;
+end;
+
+
+initialization
+   RegisterClass(TLogarView);
+
+end.

@@ -1,0 +1,112 @@
+unit uLoginView;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uFormView, Vcl.ExtCtrls,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.BaseImageCollection, Vcl.ImageCollection,
+  System.ImageList, Vcl.ImgList, Vcl.VirtualImageList, System.Actions,
+  Vcl.ActnList, Vcl.StdCtrls;
+
+type
+  TLoginView = class(TFormView)
+    aclLogin: TActionList;
+    actConfirmar: TAction;
+    actCancelar: TAction;
+    qryLogin: TFDQuery;
+    pnlAcesso: TPanel;
+    imgSenha: TImage;
+    imgLogin: TImage;
+    edtLogin: TEdit;
+    edtSenha: TEdit;
+    btnAcessar: TButton;
+    btnCancelar: TButton;
+    Label1: TLabel;
+    imcLogin: TImageCollection;
+    imlLogin: TVirtualImageList;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    procedure actConfirmarExecute(Sender: TObject);
+    procedure actCancelarExecute(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  LoginView: TLoginView;
+
+implementation
+
+{$R *.dfm}
+
+uses uMainView;
+
+procedure TLoginView.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  //inherited;
+  Action := caFree;
+  Release;
+  Self := nil;
+end;
+
+procedure TLoginView.FormCreate(Sender: TObject);
+begin
+  inherited;
+  imlLogin.GetIcon(-1, Self.Icon);
+  imlLogin.GetBitmap(2, imgLogin.Picture.Bitmap);
+  imlLogin.GetBitmap(5, imgSenha.Picture.Bitmap);
+end;
+
+procedure TLoginView.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if ((Key = VK_RETURN) and ((edtLogin.Text <> EmptyStr) or (edtSenha.Text <> EmptyStr))) then
+    Perform(WM_NEXTDLGCTL, 0, 0)
+end;
+
+procedure TLoginView.actConfirmarExecute(Sender: TObject);
+begin
+  inherited;
+  if (Trim(edtLogin.Text) <> EmptyStr) and (Trim(edtLogin.Text) <> EmptyStr) then
+  begin
+    qryLogin.Close;
+    qryLogin.SQL.Clear;
+    qryLogin.SQL.Add('select * from vw_usuarios where login = '+AnsiUpperCase(QuotedStr(edtLogin.Text))+' and senha = '+QuotedStr(edtSenha.Text));
+    qryLogin.Open();
+    if not qryLogin.IsEmpty then
+    begin
+      MainView.Logado := True;
+      MainView.FormActivate(Sender);
+      Close;
+    end
+    else
+    begin
+      MainView.Logado := False;
+      MainView.Mensagem.Aviso('Usuário e/ou Senha inválidos!', True, edtSenha);
+    end;
+  end
+  else
+  begin
+    MainView.Logado := True;
+    MainView.Mensagem.Aviso('Usuário e/ou Senha não informados!', True, edtLogin);
+  end;
+end;
+
+procedure TLoginView.actCancelarExecute(Sender: TObject);
+begin
+  inherited;
+  MainView.Close;
+end;
+
+
+initialization
+   RegisterClass(TLoginView);
+
+end.

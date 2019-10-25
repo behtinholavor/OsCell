@@ -1,0 +1,263 @@
+inherited ClienteView: TClienteView
+  Caption = 'ClienteView'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    inherited pnlCadastro: TPanel
+      AutoSize = True
+      Locked = False
+      ExplicitWidth = 649
+      object txtidcliente: TDBText [0]
+        Left = 584
+        Top = 14
+        Width = 50
+        Height = 13
+        Margins.Left = 1
+        Margins.Top = 1
+        Margins.Right = 1
+        Margins.Bottom = 1
+        Anchors = [akTop, akRight]
+        DataField = 'idcliente'
+        DataSource = dtsCadastro
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      object lblnome: TLabel [1]
+        Left = 10
+        Top = 35
+        Width = 634
+        Height = 16
+        AutoSize = False
+        Caption = 'Nome do cliente'
+      end
+      object lblfone: TLabel [2]
+        Left = 10
+        Top = 87
+        Width = 159
+        Height = 16
+        AutoSize = False
+        Caption = 'Fone'
+      end
+      object lblemail: TLabel [3]
+        Left = 175
+        Top = 87
+        Width = 351
+        Height = 16
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'e-mail'
+      end
+      object lblobs: TLabel [4]
+        Left = 10
+        Top = 146
+        Width = 634
+        Height = 16
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'Observa'#231#245'es'
+      end
+      object Label1: TLabel [5]
+        Left = 532
+        Top = 87
+        Width = 102
+        Height = 16
+        Anchors = [akTop, akRight]
+        AutoSize = False
+        Caption = 'Nascimento'
+      end
+      inherited pnlRodape: TPanel
+        ExplicitWidth = 645
+        inherited lblCadastrado: TLabel
+          Height = 33
+        end
+        inherited lblAlterado: TLabel
+          Height = 33
+        end
+      end
+      object edtnome: TDBEdit
+        Left = 10
+        Top = 57
+        Width = 624
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'nome'
+        DataSource = dtsCadastro
+        TabOrder = 1
+      end
+      object edtfone: TDBEdit
+        Left = 10
+        Top = 109
+        Width = 159
+        Height = 24
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'fone'
+        DataSource = dtsCadastro
+        TabOrder = 2
+        OnKeyPress = edtfoneKeyPress
+      end
+      object edtemail: TDBEdit
+        Left = 175
+        Top = 109
+        Width = 351
+        Height = 24
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        CharCase = ecLowerCase
+        DataField = 'email'
+        DataSource = dtsCadastro
+        TabOrder = 3
+      end
+      object mmoobs: TDBMemo
+        Left = 10
+        Top = 168
+        Width = 624
+        Height = 377
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        DataField = 'obs'
+        DataSource = dtsCadastro
+        TabOrder = 4
+      end
+      object dtnascimento: TDBEdit
+        Left = 532
+        Top = 109
+        Width = 102
+        Height = 24
+        Anchors = [akTop, akRight]
+        AutoSize = False
+        CharCase = ecUpperCase
+        DataField = 'dtnascimento'
+        DataSource = dtsCadastro
+        MaxLength = 10
+        ReadOnly = True
+        TabOrder = 5
+        OnKeyPress = dtnascimentoKeyPress
+      end
+      object Calendar: TCalendarPicker
+        Left = 600
+        Top = 110
+        Width = 29
+        Height = 20
+        Anchors = [akTop, akRight]
+        BorderColor = clWhite
+        CalendarHeaderInfo.DaysOfWeekFont.Charset = DEFAULT_CHARSET
+        CalendarHeaderInfo.DaysOfWeekFont.Color = clWindowText
+        CalendarHeaderInfo.DaysOfWeekFont.Height = -13
+        CalendarHeaderInfo.DaysOfWeekFont.Name = 'Segoe UI'
+        CalendarHeaderInfo.DaysOfWeekFont.Style = []
+        CalendarHeaderInfo.Font.Charset = DEFAULT_CHARSET
+        CalendarHeaderInfo.Font.Color = clWindowText
+        CalendarHeaderInfo.Font.Height = -20
+        CalendarHeaderInfo.Font.Name = 'Segoe UI'
+        CalendarHeaderInfo.Font.Style = []
+        Color = clWindow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        OnChange = CalendarChange
+        ParentFont = False
+        TabOrder = 6
+        TextHint = 'select a date'
+      end
+    end
+    inherited pgcCadastro: TPageControl
+      inherited tabCadastro: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+        inherited pnlInserir: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlAlterar: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlExcluir: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlPesquisar: TPanel
+          ExplicitTop = 437
+          ExplicitWidth = 135
+        end
+        inherited pnlFechar: TPanel
+          ExplicitTop = 525
+          ExplicitWidth = 135
+        end
+        inherited pnlNavegar: TPanel
+          ExplicitTop = 481
+        end
+      end
+      inherited tabEdicao: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 4
+        ExplicitWidth = 137
+        ExplicitHeight = 567
+        inherited pnlSalvar: TPanel
+          ExplicitWidth = 135
+        end
+        inherited pnlCancelar: TPanel
+          ExplicitWidth = 135
+        end
+      end
+    end
+  end
+  inherited tblCadastro: TFDTable
+    IndexFieldNames = 'idcliente'
+    UpdateOptions.UpdateTableName = 'clientes'
+    TableName = 'clientes'
+    object tblCadastroidcliente: TIntegerField
+      FieldName = 'idcliente'
+      Origin = 'idcliente'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object tblCadastronome: TWideStringField
+      FieldName = 'nome'
+      Origin = 'nome'
+      Size = 1000
+    end
+    object tblCadastrofone: TWideStringField
+      FieldName = 'fone'
+      Origin = 'fone'
+    end
+    object tblCadastroemail: TWideStringField
+      FieldName = 'email'
+      Origin = 'email'
+      Size = 1000
+    end
+    object tblCadastroobs: TWideMemoField
+      FieldName = 'obs'
+      Origin = 'obs'
+      BlobType = ftWideMemo
+    end
+    object tblCadastrodtnascimento: TDateField
+      FieldName = 'dtnascimento'
+      Origin = 'dtnascimento'
+    end
+    object tblCadastrouscadast: TWideStringField
+      FieldName = 'uscadast'
+      Origin = 'uscadast'
+      Size = 45
+    end
+    object tblCadastrodtcadast: TSQLTimeStampField
+      FieldName = 'dtcadast'
+      Origin = 'dtcadast'
+    end
+    object tblCadastrousmodifi: TWideStringField
+      FieldName = 'usmodifi'
+      Origin = 'usmodifi'
+      Size = 45
+    end
+    object tblCadastrodtmodifi: TSQLTimeStampField
+      FieldName = 'dtmodifi'
+      Origin = 'dtmodifi'
+    end
+  end
+end

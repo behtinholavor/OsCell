@@ -1,0 +1,210 @@
+unit uCadastroItemView;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uCadastroView, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  System.Actions, Vcl.ActnList, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.DBCtrls,
+  Vcl.Grids, Vcl.DBGrids, Vcl.TabNotBk;
+
+type
+  TCadastroItemView = class(TCadastroView)
+    tblCadastroItem: TFDTable;
+    dtsCadastroItem: TDataSource;
+    actInserirItem: TAction;
+    actExcluirItem: TAction;
+    pnlCadastroItem: TPanel;
+    pgcCadastroItem: TPageControl;
+    tabGrid: TTabSheet;
+    tabItem: TTabSheet;
+    grdCadastroItem: TDBGrid;
+    actSalvarItem: TAction;
+    actCancelarItem: TAction;
+    pnlCadastroItemAcao: TPanel;
+    imgInserirItem: TImage;
+    imgExcluirItem: TImage;
+    imgSalvarItem: TImage;
+    imgCancelarItem: TImage;
+    procedure FormCreate(Sender: TObject);
+    procedure dtsCadastroDataChange(Sender: TObject; Field: TField);
+    procedure actInserirItemExecute(Sender: TObject);
+    procedure actExcluirItemExecute(Sender: TObject);
+    procedure actSalvarItemExecute(Sender: TObject);
+    procedure actCancelarItemExecute(Sender: TObject);
+    procedure dtsCadastroItemStateChange(Sender: TObject);
+  private
+    { Private declarations }
+    FTabelaItem: String;
+    procedure SetTabelaItem(const Value: String);
+  public
+    { Public declarations }
+    procedure InserirItem; virtual;
+    procedure ExcluirItem; virtual;
+    procedure SalvarItem; virtual;
+    procedure CancelarItem; virtual;
+    property TabelaItem: String read FTabelaItem write SetTabelaItem;
+  end;
+
+var
+  CadastroItemView: TCadastroItemView;
+
+implementation
+
+{$R *.dfm}
+
+uses uMainView;
+
+procedure TCadastroItemView.FormCreate(Sender: TObject);
+begin
+  inherited;
+  tblCadastroItem.Close;
+  tblCadastroItem.TableName := TabelaItem;
+  tblCadastroItem.Open();
+
+  imgInserirItem.Picture.Bitmap := nil;
+  MainView.imlForm.GetBitmap(0, imgInserirItem.Picture.Bitmap);
+  imgInserirItem.Hint    := actInserirItem.Hint;
+  imgInserirItem.OnClick := actInserirItemExecute;
+
+  imgExcluirItem.Picture.Bitmap := nil;
+  MainView.imlForm.GetBitmap(2, imgExcluirItem.Picture.Bitmap);
+  imgExcluirItem.Hint    := actExcluirItem.Hint;
+  imgExcluirItem.OnClick := actExcluirItemExecute;
+
+  imgSalvarItem.Picture.Bitmap := nil;
+  MainView.imlForm.GetBitmap(3, imgSalvarItem.Picture.Bitmap);
+  imgSalvarItem.Hint    := actSalvarItem.Hint;
+  imgSalvarItem.OnClick := actSalvarItemExecute;
+
+  imgCancelarItem.Picture.Bitmap := nil;
+  MainView.imlForm.GetBitmap(4, imgCancelarItem.Picture.Bitmap);
+  imgCancelarItem.Hint    := actCancelarItem.Hint;
+  imgCancelarItem.OnClick := actCancelarItemExecute;
+
+  pgcCadastroItem.ActivePageIndex := 1;
+  tabGrid.TabVisible := False;
+  tabItem.TabVisible := False;
+  pgcCadastroItem.ActivePageIndex := 0;
+end;
+
+procedure TCadastroItemView.dtsCadastroDataChange(Sender: TObject;
+  Field: TField);
+begin
+  inherited;
+  if Sender <> nil then
+  begin
+    tblCadastroItem.Close;
+    tblCadastroItem.Filtered := False;
+    tblCadastroItem.Filter := EmptyStr;
+
+    tblCadastroItem.Filter := 'guidajuste = '+tblCadastro.FieldByName('guidajuste').AsString;
+    tblCadastroItem.Filtered := True;
+    tblCadastroItem.Open();
+  end;
+end;
+
+procedure TCadastroItemView.dtsCadastroItemStateChange(Sender: TObject);
+begin
+  inherited;
+  if dtsCadastroItem.State in [dsInsert, dsEdit] then
+    pgcCadastroItem.ActivePage := tabItem
+  else
+    pgcCadastroItem.ActivePage := tabGrid;
+
+  actInserirItem.Enabled   := not (dtsCadastroItem.State in [dsInsert, dsEdit]);
+  actExcluirItem.Enabled   := not (dtsCadastroItem.State in [dsInsert, dsEdit]);
+  actSalvarItem.Enabled    := dtsCadastroItem.State in [dsInsert, dsEdit];
+  actCancelarItem.Enabled  := dtsCadastroItem.State in [dsInsert, dsEdit];
+
+  imgInserirItem.Visible   := actInserirItem.Enabled;
+  imgExcluirItem.Visible   := actExcluirItem.Enabled;
+  imgSalvarItem.Visible    := actSalvarItem.Enabled;
+  imgCancelarItem.Visible  := actCancelarItem.Enabled;
+end;
+
+procedure TCadastroItemView.actInserirItemExecute(Sender: TObject);
+begin
+  inherited;
+  InserirItem;
+end;
+
+procedure TCadastroItemView.actExcluirItemExecute(Sender: TObject);
+begin
+  inherited;
+  ExcluirItem;
+end;
+
+procedure TCadastroItemView.actSalvarItemExecute(Sender: TObject);
+begin
+  inherited;
+  SalvarItem;
+end;
+
+procedure TCadastroItemView.actCancelarItemExecute(Sender: TObject);
+begin
+  inherited;
+  CancelarItem;
+end;
+
+procedure TCadastroItemView.InserirItem;
+begin
+  if not (dtsCadastroItem.State in [dsInsert]) then
+  begin
+    tblCadastroItem.Insert;
+    if pnlCadastroItem.CanFocus then
+      pnlCadastroItem.SetFocus;
+  end;
+end;
+
+procedure TCadastroItemView.ExcluirItem;
+begin
+  if (not (dtsCadastroItem.State in [dsInsert, dsEdit])) and (not (tblCadastroItem.IsEmpty)) then
+  begin
+    if MainView.Mensagem.Pergunta('Deseja excluir o item selecionado?') then
+      tblCadastroItem.Delete();
+  end;
+end;
+
+procedure TCadastroItemView.SalvarItem;
+begin
+  try
+    if (dtsCadastroItem.State in [dsInsert, dsEdit]) then
+    begin
+      if dtsCadastroItem.State = dsInsert then
+      begin
+        tblCadastroItem.FieldByName('USCADAST').AsString   := MainView.Usuario.getLogin();
+        tblCadastroItem.FieldByName('DTCADAST').AsDateTime := Now;
+      end
+      else if dtsCadastroItem.State = dsEdit then
+      begin
+        tblCadastroItem.FieldByName('USMODIFI').AsString   := MainView.Usuario.getLogin();
+        tblCadastroItem.FieldByName('DTMODIFI').AsDateTime := Now;
+      end;
+      tblCadastroItem.Post;
+      tblCadastroItem.Refresh;
+    end;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao salvar item:'+ e.Message + e.StackTrace);
+  end;
+end;
+
+procedure TCadastroItemView.CancelarItem;
+begin
+  if (dtsCadastroItem.State in [dsInsert, dsEdit]) then
+    tblCadastroItem.Cancel;
+end;
+
+procedure TCadastroItemView.SetTabelaItem(const Value: String);
+begin
+  FTabelaItem := Value;
+end;
+
+initialization
+   RegisterClass(TCadastroItemView);
+
+end.

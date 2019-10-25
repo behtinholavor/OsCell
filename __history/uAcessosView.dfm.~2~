@@ -1,0 +1,16 @@
+inherited AcessosView: TAcessosView
+  Caption = 'AcessosView'
+  ClientHeight = 384
+  ClientWidth = 893
+  ExplicitWidth = 899
+  ExplicitHeight = 413
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlForm: TPanel
+    Width = 891
+    Height = 379
+    ExplicitLeft = 1
+    ExplicitWidth = 798
+    ExplicitHeight = 595
+  end
+end

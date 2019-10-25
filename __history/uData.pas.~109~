@@ -1,0 +1,109 @@
+unit uData;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Forms, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
+  FireDAC.Phys.PGDef, FireDAC.Phys.PG, Data.DB, FireDAC.Comp.Client, Dialogs,
+  StdCtrls, System.StrUtils;
+
+type
+  TData = class(TDataModule)
+    cnnData: TFDConnection;
+    lnkData: TFDPhysPgDriverLink;
+    procedure DataModuleCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+
+
+var
+  Data: TData;
+
+implementation
+
+uses uMainView;
+
+function RegisterSystem(Token: String): Boolean; stdcall; external 'libsystem.dll';
+function RegisterDate(Date: String): Boolean; stdcall; external 'libsystem.dll';
+function RegisterAcess(User, Password: String): Boolean; stdcall; external 'libsystem.dll';
+
+
+{$R *.dfm}
+
+function DriverConnection: Boolean;
+begin
+  try
+    Data.lnkData.VendorHome := ExtractFilePath(Application.ExeName) + '';
+    Data.lnkData.VendorLib  := 'libpq.dll';
+    Data.lnkData.Release;
+    Result := Data.lnkData.DriverState = drsActive;
+  except
+    on e: Exception do
+    begin
+      Result := False;
+      ShowMessage('Erro ao carregar driver de conexão! '+#13+ e.Message +#13+ e.StackTrace);
+    end;
+  end;
+end;
+
+function DatabaseConnection: Boolean;
+begin
+  try
+    Data.cnnData.Connected                   := False;
+    Data.cnnData.Params.Values['Database']   := 'db_oscell';
+    Data.cnnData.Params.Values['User_name']  := 'sysoss';
+    Data.cnnData.Params.Values['Password']   := 'oss123';
+    Data.cnnData.Params.Values['Port']       := '5432';
+    Data.cnnData.Params.Values['Server']     := 'localhost';
+    Data.cnnData.Connected                   := True;
+    Result := Data.cnnData.Connected;
+  except
+    on e: Exception do
+    begin
+      Result := False;
+      ShowMessage('Erro ao conectar a base de dados! '+#13+ e.Message +#13+ e.StackTrace);
+    end;
+  end;
+end;
+
+function SystemConnection: Boolean;
+var
+  Token, Data: String;
+  year, month, day: Word;
+  booSys, booDate: Boolean;
+begin
+  try
+    Token   := 'a0c626bf-9e95-40f8-91e8-1164e259749fc';
+    DecodeDate(Date, year, month, day);
+    Data := IfThen(day < 10, '0', '') +  IntToStr(day) + IfThen(month < 10, '0', '') + IntToStr(month) + IntToStr(year);
+
+    booSys  := RegisterSystem(Token);
+    booDate := RegisterDate(Data);
+    if booSys and booDate then
+      Result := True
+    else
+      Abort;
+  except
+    on e: Exception do
+    begin
+      Result := False;
+      ShowMessage('Erro ao registrar as bibliotecas de sistema! '+#13+'Entre em contato com o suporte técnico.');
+      Application.Terminate;
+    end;
+  end;
+end;
+
+procedure TData.DataModuleCreate(Sender: TObject);
+begin
+  DriverConnection;
+  DatabaseConnection;
+  SystemConnection;
+end;
+
+end.
