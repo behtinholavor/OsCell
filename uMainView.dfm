@@ -10,8 +10,8 @@ object MainView: TMainView
   AutoSize = True
   BorderStyle = bsSingle
   Caption = 'OsCell - Controle de OS'
-  ClientHeight = 789
-  ClientWidth = 945
+  ClientHeight = 633
+  ClientWidth = 1139
   Color = clBtnFace
   UseDockManager = True
   Font.Charset = DEFAULT_CHARSET
@@ -231,8 +231,8 @@ object MainView: TMainView
   end
   object stbMenu: TStatusBar
     Left = 0
-    Top = 770
-    Width = 945
+    Top = 614
+    Width = 1139
     Height = 19
     Panels = <
       item
@@ -252,6 +252,8 @@ object MainView: TMainView
         Alignment = taCenter
         Width = 400
       end>
+    ExplicitTop = 790
+    ExplicitWidth = 945
   end
   object mnuMenu: TMainMenu
     AutoHotkeys = maManual
